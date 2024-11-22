@@ -15,8 +15,22 @@ import { useForm } from "react-hook-form";
 import { RegisterSchema } from "@/utils/validators/user";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { api } from "@/trpc/react";
+import { FormError } from "@/components/misc/form-error";
+import { FormSuccess } from "@/components/misc/form-success";
+import { useState } from "react";
 
 export const RegisterForm = () => {
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const { mutate, isPending } = api.user.create.useMutation({
+    onSuccess: () => {
+      setSuccess("User created successfully");
+    },
+    onError: (error) => {
+      setError(error.message);
+    },
+  });
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -27,7 +41,9 @@ export const RegisterForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    //TODO: Add onSubmit function
+    setError("");
+    setSuccess("");
+    mutate(values);
   };
 
   return (
@@ -46,7 +62,12 @@ export const RegisterForm = () => {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="John Doe" type="text" />
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="John Doe"
+                      type="text"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -62,6 +83,7 @@ export const RegisterForm = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      disabled={isPending}
                       placeholder="john.doe@example.com"
                       type="email"
                     />
@@ -78,14 +100,21 @@ export const RegisterForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="P@ssw0rd" type="password" />
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="P@ssw0rd"
+                      type="password"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <Button type="submit" className="w-full">
+          <FormError message={error} />
+          <FormSuccess message={success} />
+          <Button type="submit" disabled={isPending} className="w-full">
             Create an account
           </Button>
         </form>
