@@ -1,9 +1,11 @@
 import "@/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
+import { Montserrat } from "next/font/google";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
+
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -15,7 +17,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="en" className={montserrat.className}>
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>

@@ -1,7 +1,9 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
+import { LoginSchema } from "@/utils/validators/user";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -31,6 +33,15 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
+    Credentials({
+      async authorize(credentials) {
+        const validatedFields = LoginSchema.safeParse(credentials);
+        if (validatedFields.success) {
+          const { email, password } = validatedFields.data;
+        }
+        return null;
+      },
+    }),
     /**
      * ...add more providers here.
      *
