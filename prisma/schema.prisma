@@ -43,13 +43,14 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String      @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?     @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    skills        UserSkill[]
 }
 
 model VerificationToken {
@@ -58,4 +59,35 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Skill {
+    id       String      @id @default(cuid())
+    name     String
+    category Category    @default(SOFTSKILLS)
+    users    UserSkill[]
+}
+
+model UserSkill {
+    id               String           @id @default(cuid())
+    proficiencyLevel ProficiencyLevel @default(BEGINNER)
+    user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId           String
+    skill            Skill            @relation(fields: [skillId], references: [id], onDelete: Cascade)
+    skillId          String
+
+    @@unique([userId, skillId])
+}
+
+enum ProficiencyLevel {
+    BEGINNER
+    INTERMEDIATE
+    ADVANCED
+}
+
+enum Category {
+    SOFTSKILLS
+    TECHNICAL
+    LEADERSHIP
+    COMMUNICATION
 }
