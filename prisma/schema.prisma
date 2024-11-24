@@ -1,20 +1,12 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
 }
 
 datasource db {
     provider = "postgresql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
 }
 
-// Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
     userId                   String
@@ -50,9 +42,9 @@ enum UserRole {
 model User {
     id            String      @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?     @unique
     password      String?
-    role          UserRole  @default(USER)
+    role          UserRole    @default(USER)
     emailVerified DateTime?
     image         String?
     accounts      Account[]
@@ -69,10 +61,12 @@ model VerificationToken {
 }
 
 model Skill {
-    id       String      @id @default(cuid())
-    name     String
-    category Category    @default(SOFTSKILLS)
-    users    UserSkill[]
+    id        String      @id @default(cuid())
+    name      String      @unique
+    category  Category    @default(SOFTSKILLS)
+    users     UserSkill[]
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
 }
 
 model UserSkill {
@@ -82,6 +76,8 @@ model UserSkill {
     userId           String
     skill            Skill            @relation(fields: [skillId], references: [id], onDelete: Cascade)
     skillId          String
+    createdAt        DateTime         @default(now())
+    updatedAt        DateTime         @updatedAt
 
     @@unique([userId, skillId])
 }
