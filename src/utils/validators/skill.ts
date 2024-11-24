@@ -18,7 +18,7 @@ export const UpdateSkillSchema = z.object({
   category: z.nativeEnum(Category).default(Category.SOFTSKILLS),
 });
 
-export const AddUserSkillSchema = z.object({
+export const UserSkillFormSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
   skills: z
     .array(
@@ -33,14 +33,8 @@ export const AddUserSkillSchema = z.object({
 export const UpdateUserSkillSchema = z.object({
   id: z.string().min(1, "UserSkill ID is required"),
   userId: z.string(),
-  skills: z
-    .array(
-      z.object({
-        skillId: z.string(),
-        proficiencyLevel: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]),
-      }),
-    )
-    .min(1),
+  skillId: z.string().min(1, "Skill is required"),
+  proficiencyLevel: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]),
 });
 
 export const DeleteSchema = z.object({

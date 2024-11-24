@@ -25,9 +25,22 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { AddUserSkillSchema } from "@/utils/validators/skill";
+import {
+  UserSkillFormSchema,
+  UpdateUserSkillSchema,
+} from "@/utils/validators/skill";
 
-export function AddUserSkill() {
+interface AddSkillsSheetProps {
+  button: React.ReactNode;
+  initialSkills?: {
+    id: string;
+    skillName: string;
+    skillId: string;
+    proficiencyLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  }[];
+}
+
+export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
   const trpcUtils = api.useUtils();
   const { toast } = useToast();
   const [predefinedSkills, setPredefinedSkills] = useState<Skill[]>([]);
@@ -39,16 +52,14 @@ export function AddUserSkill() {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<z.infer<typeof AddUserSkillSchema>>({
-    resolver: zodResolver(AddUserSkillSchema),
+  } = useForm<z.infer<typeof UserSkillFormSchema>>({
+    resolver: zodResolver(UserSkillFormSchema),
     defaultValues: {
       userId: "",
-      skills: [
-        {
-          skillId: "",
-          proficiencyLevel: "BEGINNER",
-        },
-      ],
+      skills:
+        (initialSkills?.length ?? 0) > 0
+          ? initialSkills
+          : [{ skillId: "", proficiencyLevel: "BEGINNER" }],
     },
   });
 
@@ -81,26 +92,54 @@ export function AddUserSkill() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof AddUserSkillSchema>) => {
-    addSkill(values);
+  const { mutateAsync: updateSkill, isPending: isUpdating } =
+    api.userSkills.edit.useMutation({
+      onSuccess: () => {
+        trpcUtils.userSkills.invalidate();
+        toast({
+          title: "Success",
+          description: "Skills updated successfully!",
+        });
+        reset();
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        });
+      },
+    });
+
+
+  const onSubmit = async (values: z.infer<typeof UserSkillFormSchema>) => {
+    if (initialSkills) {
+      if (initialSkills.length > 0) {
+        await updateSkill({
+          userId: values.userId,
+          skillId: values.skills[0]?.skillId,
+          id: initialSkills[0]?.id,
+          proficiencyLevel: values?.skills[0]?.proficiencyLevel,
+        } as unknown as z.infer<typeof UpdateUserSkillSchema>);
+      }
+    } else {
+      await addSkill(values);
+    }
   };
 
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">
-          <Plus /> Add Skill(s) To My Skills
-        </Button>
-      </SheetTrigger>
+      <SheetTrigger asChild>{button}</SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Add Skill(s) To My Skills</SheetTitle>
           <SheetDescription>
-            Add one or more skills to your current skills. Click submit when
-            you're done.
+            {initialSkills
+              ? "Update the skill."
+              : "Add one or more skills to your current skills."}
           </SheetDescription>
         </SheetHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-12">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-12 space-y-4">
           <div>
             <Input
               placeholder="User ID"
@@ -154,13 +193,15 @@ export function AddUserSkill() {
                     <SelectItem value="ADVANCED">Advanced</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button
-                  type="button"
-                  onClick={() => remove(index)}
-                  className="px-2"
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
+                {!initialSkills && (
+                  <Button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="px-2"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
               {errors.skills?.[index]?.skillId && (
                 <p className="mt-1 text-sm text-red-500">
@@ -170,16 +211,18 @@ export function AddUserSkill() {
             </div>
           ))}
 
-          <Button
-            type="button"
-            onClick={() =>
-              append({ skillId: "", proficiencyLevel: "BEGINNER" })
-            }
-            className="w-full"
-            variant="outline"
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add Skill
-          </Button>
+          {!initialSkills && (
+            <Button
+              type="button"
+              onClick={() =>
+                append({ skillId: "", proficiencyLevel: "BEGINNER" })
+              }
+              className="w-full"
+              variant="outline"
+            >
+              <Plus className="mr-2 h-4 w-4" /> Add Skill
+            </Button>
+          )}
           <Button type="submit" className="mt-4 w-full" disabled={isPending}>
             {isPending ? "Submitting..." : "Submit Skill(s)"}
           </Button>

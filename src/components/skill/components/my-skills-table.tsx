@@ -15,7 +15,7 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash, ArrowUpDown } from "lucide-react";
+import { Pencil, Trash, ArrowUpDown, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -27,7 +27,9 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
 import { MySkill } from "@/types";
-import { AddUserSkill } from "./add-user-skill";
+import { UserSkillForm } from "./user-skill-form";
+import DeleteModel from "./delete-model";
+import { toast } from "@/hooks/use-toast";
 
 type RowData = {
   skill: {
@@ -37,9 +39,27 @@ type RowData = {
 };
 
 export function MySkillsTable() {
+  const trpcUtils = api.useUtils();
   const [data, setData] = React.useState<MySkill[]>([]);
   const { data: skills } = api.userSkills.list.useQuery({
     userId: "nahajajJsnjijhs",
+  });
+
+  const { mutate: deleteSkill, isPending } = api.userSkills.delete.useMutation({
+    onSuccess: () => {
+      trpcUtils.userSkills.invalidate();
+      toast({
+        title: "Success",
+        description: "Skill deleted successfully!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    },
   });
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -139,29 +159,27 @@ export function MySkillsTable() {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const handleEdit = () => {
-          alert("Edit clicked");
-        };
-
-        const handleDelete = () => {
-          alert("Delete clicked");
-        };
         return (
           <div className="flex justify-end space-x-4">
-            <button
-              onClick={handleEdit}
-              className="rounded-[20%] border border-gray-300 bg-white p-2 text-black transition duration-150 hover:bg-gray-100 dark:border-gray-700 dark:bg-black dark:text-white hover:dark:bg-gray-800"
-              title="Edit"
-            >
-              <Pencil size={12} />
-            </button>
-            <button
-              onClick={handleDelete}
-              className="rounded-[20%] border border-gray-300 bg-white p-2 text-black transition duration-150 hover:bg-gray-100 dark:border-gray-700 dark:bg-black dark:text-white hover:dark:bg-gray-800"
-              title="Delete"
-            >
-              <Trash size={12} />
-            </button>
+            <UserSkillForm
+              button={editButton}
+              initialSkills={[
+                {
+                  skillId: row.original.skill.id,
+                  id: row.original.id,
+                  skillName: row.original.skill.name,
+                  proficiencyLevel: row.original.proficiencyLevel as
+                    | "BEGINNER"
+                    | "INTERMEDIATE"
+                    | "ADVANCED",
+                },
+              ]}
+            />
+            <DeleteModel
+              button={deleteButton}
+              isPending={isPending}
+              onDelete={() => handleDelete(row.original.id)}
+            />
           </div>
         );
       },
@@ -186,6 +204,29 @@ export function MySkillsTable() {
       rowSelection,
     },
   });
+
+  const addButton = (
+    <Button variant="outline">
+      <Plus /> Add Skill(s) To My Skills
+    </Button>
+  );
+
+  const editButton = (
+    <Button variant="outline" title="Edit">
+      <Pencil />
+    </Button>
+  );
+
+  const deleteButton = (
+    <Button variant="outline">
+      <Trash />
+    </Button>
+  );
+
+  const handleDelete = (id: string) => {
+    deleteSkill({ id });
+  };
+
   return (
     <div className="w-full">
       <div className="flex justify-between py-4">
@@ -198,7 +239,7 @@ export function MySkillsTable() {
           }}
           className="max-w-sm"
         />
-        <AddUserSkill />
+        <UserSkillForm button={addButton} />
       </div>
       <div className="rounded-md border">
         <Table>

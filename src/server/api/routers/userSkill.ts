@@ -3,7 +3,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import {
-  AddUserSkillSchema,
+  UserSkillFormSchema,
   DeleteSchema,
   UpdateUserSkillSchema,
 } from "@/utils/validators/skill";
@@ -37,7 +37,7 @@ export const userskillsRouter = createTRPCRouter({
     }),
 
   add: publicProcedure
-    .input(AddUserSkillSchema)
+    .input(UserSkillFormSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = input.userId;
       const skillIds = input.skills.map((skill) => skill.skillId);
@@ -88,11 +88,57 @@ export const userskillsRouter = createTRPCRouter({
 
   edit: publicProcedure
     .input(UpdateUserSkillSchema)
-    .mutation(async ({ input }) => {
-      return await db.userSkill.update({
-        where: { id: input.id },
-        data: input,
+    .mutation(async ({ input, ctx }) => {
+      const { userId, skillId, proficiencyLevel, id } = input;
+
+      const existingUserSkill = await ctx.db.userSkill.findUnique({
+        where: { id },
       });
+
+      if (!existingUserSkill) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Skill not found for the given user.",
+        });
+      }
+
+      const existingSkills = await ctx.db.userSkill.findMany({
+        where: {
+          userId,
+          skillId: { not: skillId },
+        },
+        select: { skillId: true },
+      });
+
+      const existingSkillIds = existingSkills.map((skill) => skill.skillId);
+
+      if (existingSkillIds.includes(skillId)) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This skill already exists for the user.",
+        });
+      }
+
+      try {
+        const updatedUserSkill = await ctx.db.userSkill.update({
+          where: { id },
+          data: {
+            skillId,
+            proficiencyLevel,
+          },
+        });
+
+        return {
+          message: "Skill updated successfully.",
+          skill: updatedUserSkill,
+        };
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update user skill.",
+          cause: error,
+        });
+      }
     }),
 
   delete: publicProcedure.input(DeleteSchema).mutation(async ({ input }) => {
