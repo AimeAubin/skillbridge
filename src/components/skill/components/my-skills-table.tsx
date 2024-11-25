@@ -30,11 +30,13 @@ import { MySkill } from "@/types";
 import { UserSkillForm } from "./user-skill-form";
 import DeleteModel from "./delete-model";
 import { toast } from "@/hooks/use-toast";
+import SkillBadge from "./skillbadge";
 
 type RowData = {
   skill: {
     id: string;
     name: string;
+    category: string;
   };
 };
 
@@ -103,6 +105,25 @@ export function MySkillsTable() {
       filterFn: (row, columnId, filterValue) => {
         const skill = row.getValue(columnId) as RowData["skill"];
         return skill?.name.toLowerCase().includes(filterValue.toLowerCase());
+      },
+    },
+    {
+      accessorKey: "category",
+      header: ({ column }) => {
+        return (
+          <Button
+            className="pl-0"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+           Category
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const skill = row.getValue("skill") as RowData["skill"];
+      return <SkillBadge category={skill?.category.toLowerCase()} />;
       },
     },
     {
