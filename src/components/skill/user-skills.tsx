@@ -1,5 +1,5 @@
 "use client";
-import { MySkillsTable } from "./components/my-skills-table";
+import { MySkillsTable } from "./components/tables/my-skills-table";
 
 export const UserSkills = () => {
  

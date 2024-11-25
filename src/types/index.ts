@@ -2,6 +2,8 @@ export interface Skill {
   id: string;
   name: string;
   category: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface MySkill {

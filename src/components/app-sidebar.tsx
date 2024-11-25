@@ -55,12 +55,8 @@ const data = {
           url: "/dashboard/skills",
         },
         {
-          title: "My Skills",
-          url: "/dashboard/my-skills",
-        },
-        {
           title: "Skills",
-          url: "/dashboard/add-skill",
+          url: "/dashboard/my-skills",
         },
       ],
     },

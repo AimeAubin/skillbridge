@@ -71,7 +71,13 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
   const { data: skillData } = api.skills.list.useQuery();
   useEffect(() => {
     if (skillData) {
-      setPredefinedSkills(skillData);
+      setPredefinedSkills(
+        skillData.map((skill) => ({
+          ...skill,
+          createdAt: skill.createdAt.toISOString(),
+          updatedAt: skill.updatedAt.toISOString(),
+        })),
+      );
     }
   }, [skillData]);
   const { mutateAsync: addSkill, isPending } = api.userSkills.add.useMutation({
@@ -111,7 +117,6 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
       },
     });
 
-
   const onSubmit = async (values: z.infer<typeof UserSkillFormSchema>) => {
     if (initialSkills) {
       if (initialSkills.length > 0) {
@@ -132,11 +137,11 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
       <SheetTrigger asChild>{button}</SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Add Skill(s) To My Skills</SheetTitle>
+          <SheetTitle>
+            {initialSkills ? "Update Skill" : "Add Skill(s) To My Skills"}
+          </SheetTitle>
           <SheetDescription>
-            {initialSkills
-              ? "Update the skill."
-              : "Add one or more skills to your current skills."}
+            {!initialSkills && "Add one or more skills to your current skills."}
           </SheetDescription>
         </SheetHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-12 space-y-4">
@@ -224,7 +229,13 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
             </Button>
           )}
           <Button type="submit" className="mt-4 w-full" disabled={isPending}>
-            {isPending ? "Submitting..." : "Submit Skill(s)"}
+            {initialSkills
+              ? isUpdating
+                ? "Updating..."
+                : "Update Skill"
+              : isPending
+                ? "Submitting..."
+                : "Submit Skill(s)"}
           </Button>
         </form>
       </SheetContent>

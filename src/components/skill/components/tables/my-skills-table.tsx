@@ -27,10 +27,10 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
 import { MySkill } from "@/types";
-import { UserSkillForm } from "./user-skill-form";
-import DeleteModel from "./delete-model";
+import { UserSkillForm } from "../forms/user-skill-form";
+import DeleteModel from "../delete-model";
 import { toast } from "@/hooks/use-toast";
-import SkillBadge from "./skillbadge";
+import SkillBadge from "../skillbadge";
 
 type RowData = {
   skill: {
@@ -78,6 +78,11 @@ export function MySkillsTable() {
           ...skill,
           createdAt: skill.createdAt.toISOString(),
           updatedAt: skill.updatedAt.toISOString(),
+          skill: {
+            ...skill.skill,
+            createdAt: skill.skill.createdAt.toISOString(),
+            updatedAt: skill.skill.updatedAt.toISOString(),
+          },
         })),
       );
     }
@@ -116,14 +121,14 @@ export function MySkillsTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-           Category
+            Category
             <ArrowUpDown />
           </Button>
         );
       },
       cell: ({ row }) => {
         const skill = row.getValue("skill") as RowData["skill"];
-      return <SkillBadge category={skill?.category.toLowerCase()} />;
+        return <SkillBadge category={skill?.category.toLowerCase()} />;
       },
     },
     {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Category, ProficiencyLevel } from "@prisma/client";
+import { Category } from "@prisma/client";
 
 export const AddSkillSchema = z.object({
   name: z
