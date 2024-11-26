@@ -18,11 +18,11 @@ const SkillBadge: React.FC<SkillBadgeProps> = ({ category }) => {
   return (
     <span
       className={cn(
-        "px-2 py-1 text-sm font-medium rounded-md capitalize",
+        "px-2 py-1 text-sm font-medium rounded-xl capitalize",
         colorClass
       )}
     >
-      {category}
+      {category.toLowerCase()}
     </span>
   );
 };
