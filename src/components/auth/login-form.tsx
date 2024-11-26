@@ -3,13 +3,30 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "@/utils/validators/user";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { useSearchParams } from "next/navigation";
+import { useTransition, useState } from "react";
+import { login } from "@/actions/login";
+import { FormError } from "@/components/misc/form-error";
+import { FormSuccess } from "@/components/misc/form-success";
 
 export const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -18,8 +35,23 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = () => {
-    //TODO: Add onSubmit function
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    setError("");
+    setSuccess("");
+
+    startTransition(() => {
+      login(values, callbackUrl)
+        .then((data) => {
+          if (data?.error) {
+            form.reset();
+            setError(data.error);
+          }
+
+          form.reset();
+          setSuccess("User logged in successfully.");
+        })
+        .catch(() => setError("Something went wrong!"));
+    });
   };
 
   return (
@@ -63,6 +95,8 @@ export const LoginForm = () => {
               )}
             />
           </div>
+          <FormError message={error} />
+          <FormSuccess message={success} />
           <Button type="submit" className="w-full">
             Create an account
           </Button>
