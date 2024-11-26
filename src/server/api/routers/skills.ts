@@ -12,7 +12,9 @@ export const skillsRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {
     try {
       const skills = await ctx.db.skill.findMany({
-        orderBy: { name: "asc" },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
       return skills;
     } catch (error) {

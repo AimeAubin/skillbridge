@@ -24,6 +24,9 @@ export const userskillsRouter = createTRPCRouter({
           include: {
             skill: true,
           },
+          orderBy: {
+            createdAt: "desc",
+          },
         });
         return userSkills;
       } catch (error) {
