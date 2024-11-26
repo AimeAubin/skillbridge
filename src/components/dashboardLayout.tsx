@@ -1,4 +1,5 @@
 "use client";
+
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -37,7 +38,7 @@ export default function DashboardLayout({
           </div>
           <div className="mr-5 flex w-full justify-end">
             <div className="mr-3">
-              <NavUser user={user} />
+              <NavUser />
             </div>
             <div className="mt-1">
               <DropdownMenu>
