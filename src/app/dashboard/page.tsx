@@ -1,11 +1,6 @@
-import { RecentlyAddedSkills } from "@/components/skill/recentlyAddedSkills";
-import { Visualization } from "@/components/skill/visualization";
+import { auth } from "@/server/auth";
 
-export default function Page() {
-  return (
-    <div className="flex  gap-3 mt-12">
-      <Visualization />
-      <RecentlyAddedSkills />
-    </div>
-  );
+export default async function Dashboard() {
+  const session = await auth();
+  return <>{session && <span>{session.user.name}</span>}</>;
 }

@@ -1,5 +1,6 @@
 "use server";
 
+import { DEFAULT_LOGIN_REDIRECT } from "@/route";
 import { signIn } from "@/server/auth";
 import { db } from "@/server/db";
 import { LoginSchema } from "@/utils/validators/user";
@@ -32,7 +33,7 @@ export const login = async (
     await signIn("credentials", {
       email,
       password,
-      redirectTo: callbackUrl ?? "/dashboard",
+      redirectTo: callbackUrl ?? DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
     if (error instanceof AuthError) {
