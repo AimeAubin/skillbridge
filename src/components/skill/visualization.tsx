@@ -26,9 +26,15 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+const proficiencyMapping = {
+  BEGINNER: 25,
+  INTERMEDIATE: 50,
+  ADVANCED: 100,
+};
+
 export function Visualization() {
 
-  const userId = "USER_ID"; 
+  const userId = "nahajajJsnjijhs"; 
   const { data: userSkills, isLoading, error } = api.userSkills.list.useQuery(
     { userId },
   );
@@ -38,9 +44,11 @@ export function Visualization() {
 
   const chartData = userSkills?.map((userSkill) => ({
     skill: userSkill.skill.name,
-    proficiencyLevel: userSkill.proficiencyLevel,
+    proficiencyLevel: proficiencyMapping[userSkill.proficiencyLevel] ?? 0,
   })) ?? [];
 
+  console.log("chart",chartData);
+console.log("userSkills",userSkills);
 
   return (
     <Card>
