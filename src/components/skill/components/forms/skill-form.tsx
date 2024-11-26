@@ -36,6 +36,17 @@ interface SkillsSheetProps {
 
 export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
   const trpcUtils = api.useUtils();
+  const {
+    mutateAsync: addSkill,
+    isPending,
+    error: addError,
+  } = api.skills.add.useMutation();
+
+  const {
+    mutateAsync: updateSkill,
+    isPending: isUpdating,
+    error: updateError,
+  } = api.skills.edit.useMutation();
   const { toast } = useToast();
   const {
     handleSubmit,
@@ -62,52 +73,47 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
     }
   }, [initialSkills, reset]);
 
-  const { mutateAsync: addSkill, isPending } = api.skills.add.useMutation({
-    onSuccess: () => {
-      trpcUtils.skills.invalidate();
-      toast({
-        title: "Success",
-        description: "Skills added successfully!",
-      });
-      reset();
-    },
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
-    },
-  });
 
-  const { mutateAsync: updateSkill, isPending: isUpdating } =
-    api.skills.edit.useMutation({
-      onSuccess: () => {
-        trpcUtils.skills.invalidate();
+
+  const onSubmit = async (values: z.infer<typeof AddSkillSchema>) => {
+    if (initialSkills) {
+      try {
+        await updateSkill({
+          id: initialSkills[0]?.id ?? "",
+          name: values.name,
+          category: values.category,
+        });
+        void trpcUtils.skills.invalidate();
         toast({
           title: "Success",
           description: "Skills updated successfully!",
         });
         reset();
-      },
-      onError: (error) => {
+      } catch (error) {
+        console.log(error);
         toast({
           variant: "destructive",
           title: "Error",
-          description: error.message,
+          description: updateError?.message,
         });
-      },
-    });
-
-  const onSubmit = async (values: z.infer<typeof AddSkillSchema>) => {
-    if (initialSkills) {
-      await updateSkill({
-        id: initialSkills[0]?.id ?? "",
-        name: values.name,
-        category: values.category,
-      });
+      }
     } else {
-      await addSkill(values);
+      try {
+        await addSkill(values);
+        void trpcUtils.skills.invalidate();
+        toast({
+          title: "Success",
+          description: "Skills added successfully!",
+        });
+        reset();
+      } catch (error) {
+        console.log(error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: addError?.message,
+        });
+      }
     }
   };
 

@@ -49,7 +49,7 @@ export function MySkillsTable() {
 
   const { mutate: deleteSkill, isPending } = api.userSkills.delete.useMutation({
     onSuccess: () => {
-      trpcUtils.userSkills.invalidate();
+      void trpcUtils.userSkills.invalidate();
       toast({
         title: "Success",
         description: "Skill deleted successfully!",
@@ -109,6 +109,7 @@ export function MySkillsTable() {
       },
       filterFn: (row, columnId, filterValue) => {
         const skill = row.getValue(columnId) as RowData["skill"];
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
         return skill?.name.toLowerCase().includes(filterValue.toLowerCase());
       },
     },

@@ -12,11 +12,9 @@ import {
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -52,11 +50,11 @@ const data = {
       items: [
         {
           title: "Visualization",
-          url: "/dashboard/skills",
+          url: "/dashboard/visualization",
         },
         {
           title: "Skills",
-          url: "/dashboard/my-skills",
+          url: "/dashboard/skills",
         },
       ],
     },

@@ -18,7 +18,7 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = ( values: z.infer<typeof LoginSchema> ) => {
+  const onSubmit = () => {
     //TODO: Add onSubmit function
   };
 

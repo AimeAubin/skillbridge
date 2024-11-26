@@ -26,7 +26,7 @@ export const RegisterForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+  const onSubmit = () => {
     //TODO: Add onSubmit function
   };
 
