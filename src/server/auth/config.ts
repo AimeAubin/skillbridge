@@ -4,6 +4,8 @@ import Credentials from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
 import { LoginSchema } from "@/utils/validators/user";
+import bcrypt from "bcryptjs";
+import { UserRole } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -16,7 +18,7 @@ declare module "next-auth" {
     user: {
       id: string;
       // ...other properties
-      // role: UserRole;
+      role: UserRole;
     } & DefaultSession["user"];
   }
 
@@ -36,8 +38,21 @@ export const authConfig = {
     Credentials({
       async authorize(credentials) {
         const validatedFields = LoginSchema.safeParse(credentials);
+
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
+
+          const user = await db.user.findUnique({
+            where: {
+              email,
+            },
+          });
+
+          if (!user?.password) return null;
+
+          const passwordMatch = await bcrypt.compare(password, user.password);
+
+          if (passwordMatch) return user;
         }
         return null;
       },
@@ -52,14 +67,46 @@ export const authConfig = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  pages: {
+    signIn: "/auth/login",
+    error: "/auth/error",
+  },
   adapter: PrismaAdapter(db),
+  session: { strategy: "jwt" },
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    signIn: async ({ account }) => {
+      if (account?.provider !== "credentials") return true;
+      return true;
+    },
+    session: async ({ token, session }) => {
+      if (token.sub && session.user) session.user.id = token.sub;
+
+      if (token.role && session.user)
+        session.user.role = token.role as UserRole;
+
+      if (session.user) {
+        session.user.name = token.name;
+        session.user.email = token.email!;
+      }
+
+      return session;
+    },
+    jwt: async ({ token }) => {
+      if (!token.sub) return token;
+
+      const existingUser = await db.user.findUnique({
+        where: {
+          id: token.sub,
+        },
+      });
+
+      if (!existingUser) return token;
+
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.role = existingUser.role;
+
+      return token;
+    },
   },
 } satisfies NextAuthConfig;

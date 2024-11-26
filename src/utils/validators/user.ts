@@ -18,7 +18,6 @@ export const LoginSchema = z.object({
         ),
       "Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character",
     ),
-  code: z.optional(z.string()),
 });
 
 export const RegisterSchema = z.object({
