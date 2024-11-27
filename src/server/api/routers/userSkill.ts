@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import {
@@ -9,40 +9,35 @@ import {
 } from "@/utils/validators/skill";
 
 export const userskillsRouter = createTRPCRouter({
-  list: publicProcedure
-    .input(
-      z.object({
-        userId: z.string().min(1, "User ID is required"),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      try {
-        const userSkills = await ctx.db.userSkill.findMany({
-          where: {
-            userId: input.userId,
-          },
-          include: {
-            skill: true,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-        return userSkills;
-      } catch (error) {
-        console.error("Error fetching skills:", error);
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch skills. Please try again later.",
-          cause: error,
-        });
-      }
-    }),
+  list: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user?.id;
+    try {
+      const userSkills = await ctx.db.userSkill.findMany({
+        where: {
+          userId: userId,
+        },
+        include: {
+          skill: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return userSkills;
+    } catch (error) {
+      console.error("Error fetching skills:", error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to fetch skills. Please try again later.",
+        cause: error,
+      });
+    }
+  }),
 
-  add: publicProcedure
+  add: protectedProcedure
     .input(UserSkillFormSchema)
     .mutation(async ({ input, ctx }) => {
-      const userId = input.userId;
+      const userId = ctx.session.user?.id;
       const skillIds = input.skills.map((skill) => skill.skillId);
       const existingSkills = await ctx.db.userSkill.findMany({
         where: {
@@ -89,10 +84,11 @@ export const userskillsRouter = createTRPCRouter({
       }
     }),
 
-  edit: publicProcedure
+  edit: protectedProcedure
     .input(UpdateUserSkillSchema)
     .mutation(async ({ input, ctx }) => {
-      const { userId, skillId, proficiencyLevel, id } = input;
+      const userId = ctx.session.user?.id;
+      const { skillId, proficiencyLevel, id } = input;
 
       const existingUserSkill = await ctx.db.userSkill.findUnique({
         where: { id },
@@ -144,7 +140,7 @@ export const userskillsRouter = createTRPCRouter({
       }
     }),
 
-  delete: publicProcedure.input(DeleteSchema).mutation(async ({ input }) => {
+  delete: protectedProcedure.input(DeleteSchema).mutation(async ({ input }) => {
     return await db.userSkill.delete({
       where: { id: input.id },
     });

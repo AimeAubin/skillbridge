@@ -32,10 +32,7 @@ const proficiencyMapping = {
 
 export function Visualization() {
 
-  const userId = "nahajajJsnjijhs"; 
-  const { data: userSkills, isLoading, error } = api.userSkills.list.useQuery(
-    { userId },
-  );
+  const { data: userSkills, isLoading, error } = api.userSkills.list.useQuery();
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;

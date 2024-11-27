@@ -31,7 +31,7 @@ const data = {
       items: [
         {
           title: "Goals",
-          url: "#",
+          url: "/dashboard/goals",
         },
         {
           title: "Add Goal",

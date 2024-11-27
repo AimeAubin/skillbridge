@@ -22,11 +22,7 @@ export default function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const { setTheme } = useTheme();
-  const user = {
-    name: "User name",
-    email: "user@email.com",
-    avatar: "/avatars/shadcn.jpg",
-  };
+
   return (
     <SidebarProvider>
       <AppSidebar />

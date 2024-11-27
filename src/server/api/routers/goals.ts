@@ -1,11 +1,16 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  publicProcedure,
-} from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const goalsRouter = createTRPCRouter({
-  createGoal: publicProcedure
+  list: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user?.id;
+    return await ctx.db.goal.findMany({
+      where: { userId },
+      include: { skill: true },
+    });
+  }),
+
+  add: protectedProcedure
     .input(
       z.object({
         skillId: z.string(),
@@ -14,28 +19,19 @@ export const goalsRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { skillId, desiredProficiency } = input;
-      const userId = "publicProcedure"; // Assuming session-based authentication
+      const userId = ctx.session.user?.id;
 
       return await ctx.db.goal.create({
         data: {
           userId,
           skillId,
           desiredProficiency,
-          status: 'ACTIVE',
+          status: "ACTIVE",
         },
       });
     }),
 
-  listGoals: publicProcedure.query(async ({ ctx }) => {
-    const userId = "publicProcedure";
-
-    return await ctx.db.goal.findMany({
-      where: { userId },
-      include: { skill: true },
-    });
-  }),
-
-  updateGoal: publicProcedure
+  edit: protectedProcedure
     .input(
       z.object({
         goalId: z.string(),
@@ -51,12 +47,12 @@ export const goalsRouter = createTRPCRouter({
         where: { id: goalId },
         data: {
           desiredProficiency,
-          status: isActive ? 'ACTIVE' : isCompleted ? 'COMPLETED' : 'INACTIVE',
+          status: isActive ? "ACTIVE" : isCompleted ? "COMPLETED" : "INACTIVE",
         },
       });
     }),
 
-  deleteGoal: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ goalId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { goalId } = input;
