@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import {
@@ -9,7 +9,7 @@ import {
 } from "@/utils/validators/skill";
 
 export const skillsRouter = createTRPCRouter({
-  list: publicProcedure.query(async ({ ctx }) => {
+  list: protectedProcedure.query(async ({ ctx }) => {
     try {
       const skills = await ctx.db.skill.findMany({
         orderBy: {
@@ -27,7 +27,7 @@ export const skillsRouter = createTRPCRouter({
     }
   }),
 
-  add: publicProcedure
+  add: protectedProcedure
     .input(AddSkillSchema)
     .mutation(async ({ input, ctx }) => {
       const existingSkill = await ctx.db.skill.findUnique({
@@ -45,7 +45,7 @@ export const skillsRouter = createTRPCRouter({
       });
     }),
 
-  edit: publicProcedure
+  edit: protectedProcedure
     .input(UpdateSkillSchema)
     .mutation(async ({ input, ctx }) => {
       const existingSkill = await ctx.db.skill.findUnique({
@@ -68,7 +68,7 @@ export const skillsRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure.input(DeleteSchema).mutation(async ({ input }) => {
+  delete: protectedProcedure.input(DeleteSchema).mutation(async ({ input }) => {
     return await db.skill.delete({
       where: { id: input.id },
     });

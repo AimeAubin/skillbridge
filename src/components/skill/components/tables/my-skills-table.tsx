@@ -43,9 +43,7 @@ type RowData = {
 export function MySkillsTable() {
   const trpcUtils = api.useUtils();
   const [data, setData] = React.useState<MySkill[]>([]);
-  const { data: skills } = api.userSkills.list.useQuery({
-    userId: "nahajajJsnjijhs",
-  });
+  const { data: skills } = api.userSkills.list.useQuery();
 
   const { mutate: deleteSkill, isPending } = api.userSkills.delete.useMutation({
     onSuccess: () => {

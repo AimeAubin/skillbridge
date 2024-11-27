@@ -10,9 +10,7 @@ import { api } from "@/trpc/react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -20,12 +18,9 @@ import {
 import SkillBadge from "./components/skillbadge";
 
 export function RecentlyAddedSkills() {
-  const { data: skills } = api?.userSkills?.list.useQuery({
-    userId: "nahajajJsnjijhs",
-  });
+  const { data: skills } = api?.userSkills?.list.useQuery();
   const recentSkills = skills ? skills?.slice(0, 5) : [];
   return (
-    <>
       <Card className="w-[50%] 2xl:w-[30%]">
         <CardHeader>
           <CardTitle>Recently Added Skills</CardTitle>
@@ -61,6 +56,5 @@ export function RecentlyAddedSkills() {
           </Table>
         </CardContent>
       </Card>
-    </>
   );
 }

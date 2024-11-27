@@ -55,7 +55,6 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
   } = useForm<z.infer<typeof UserSkillFormSchema>>({
     resolver: zodResolver(UserSkillFormSchema),
     defaultValues: {
-      userId: "",
       skills:
         (initialSkills?.length ?? 0) > 0
           ? initialSkills
@@ -123,7 +122,6 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
     if (initialSkills) {
       if (initialSkills.length > 0) {
         await updateSkill({
-          userId: values.userId,
           skillId: values.skills[0]?.skillId,
           id: initialSkills[0]?.id,
           proficiencyLevel: values?.skills[0]?.proficiencyLevel,
@@ -147,18 +145,6 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
           </SheetDescription>
         </SheetHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-12 space-y-4">
-          <div>
-            <Input
-              placeholder="User ID"
-              {...register("userId")}
-              className="w-full"
-            />
-            {errors.userId && (
-              <p className="mt-1 text-sm text-red-500">
-                {errors.userId.message}
-              </p>
-            )}
-          </div>
           {fields.map((field, index) => (
             <div key={field.id}>
               <div className="flex items-center space-x-4">

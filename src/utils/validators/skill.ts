@@ -19,7 +19,6 @@ export const UpdateSkillSchema = z.object({
 });
 
 export const UserSkillFormSchema = z.object({
-  userId: z.string().min(1, "User ID is required"),
   skills: z
     .array(
       z.object({
@@ -32,7 +31,6 @@ export const UserSkillFormSchema = z.object({
 
 export const UpdateUserSkillSchema = z.object({
   id: z.string().min(1, "UserSkill ID is required"),
-  userId: z.string(),
   skillId: z.string().min(1, "Skill is required"),
   proficiencyLevel: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]),
 });
