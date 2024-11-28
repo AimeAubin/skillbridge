@@ -152,9 +152,6 @@ export const goalsRouter = createTRPCRouter({
                 | "ADVANCED",
             },
           });
-          await ctx.db.goal.delete({
-            where: { id: goalId },
-          });
         } else {
           await ctx.db.userSkill.create({
             data: {
@@ -165,10 +162,6 @@ export const goalsRouter = createTRPCRouter({
                 | "INTERMEDIATE"
                 | "ADVANCED",
             },
-          });
-
-          await ctx.db.goal.delete({
-            where: { id: goalId },
           });
         }
       }

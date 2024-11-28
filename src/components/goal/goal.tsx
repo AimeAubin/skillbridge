@@ -180,6 +180,16 @@ export function Goals() {
     },
     {
       accessorKey: "notes",
+      header: () => <span>Notes</span>,
+      cell: ({ row }) =>
+        row.getValue("notes") === "" ? (
+          <span className="mx-5">_</span>
+        ) : (
+          <NotesModal notes={row.getValue("notes")} />
+        ),
+    },
+    {
+      accessorKey: "status",
       header: ({ column }) => {
         return (
           <Button
@@ -187,35 +197,21 @@ export function Goals() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Notes
+            Status
             <ArrowUpDown />
           </Button>
         );
       },
-      cell: ({ row }) => {
-        if (row.getValue("notes") === null) {
-          return <div>-</div>;
-        } else {
-          return <NotesModal notes={row.getValue("notes")} />;
-        }
-      },
-    },
-    {
-      accessorKey: "status",
-      header: () => <div>Action</div>,
-      cell: ({ row }) => (
-        <Button
-          className="h-6 bg-slate-500 p-1"
-          onClick={() => {
-            setSelectedGoal(row.original.id);
-            handleComplete({ id: row.original.id, status: "COMPLETED" });
-          }}
-        >
-          {completing && row.original.id === selectedGoal
-            ? "Completing..."
-            : "Mark as completed"}
-        </Button>
-      ),
+      cell: ({ row }) =>
+        row?.original.status === "COMPLETED" ? (
+          <div className="lowercase text-green-600">
+            {row.getValue("status")}
+          </div>
+        ) : (
+          <div className="lowercase text-yellow-600">
+            {row.getValue("status")}
+          </div>
+        ),
     },
     {
       accessorKey: "createdAt",
@@ -255,6 +251,19 @@ export function Goals() {
       cell: ({ row }) => {
         return (
           <div className="flex justify-end space-x-4">
+            {row.original.status === "COMPLETED" ? null : (
+              <Button
+                className="mt-2 h-6 bg-slate-500 p-1"
+                onClick={() => {
+                  setSelectedGoal(row.original.id);
+                  handleComplete({ id: row.original.id, status: "COMPLETED" });
+                }}
+              >
+                {completing && row.original.id === selectedGoal
+                  ? "Completing..."
+                  : "Mark as completed"}
+              </Button>
+            )}
             <GoalForm
               button={editButton}
               initialSkills={{
