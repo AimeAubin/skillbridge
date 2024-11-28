@@ -36,7 +36,7 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
-  updateUser: protectedProcedure
+  update: protectedProcedure
     .input(
       z.object({
         name: z.optional(z.string()),
@@ -46,16 +46,23 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const id = ctx.session.user.id;
+      const { email: userEmail } = ctx.session.user;
       const { name, email } = input;
       let password = input.password;
-      let newPassword = input.password;
+      let newPassword = input.newPassword;
 
       const user = await ctx.db.user.findUnique({
         where: {
-          id,
+          email: userEmail ?? undefined,
         },
       });
+
+      if (!user) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong. Please try again",
+        });
+      }
 
       if (email && email !== user?.email) {
         const existingUser = await ctx.db.user.findUnique({
@@ -82,7 +89,7 @@ export const userRouter = createTRPCRouter({
           });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         password = hashedPassword;
         newPassword = undefined;
@@ -99,4 +106,14 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+
+  getUserByEmail: protectedProcedure.query(async ({ ctx }) => {
+    const { email } = ctx.session.user;
+
+    return await ctx.db.user.findUnique({
+      where: {
+        email: email ?? undefined,
+      },
+    });
+  }),
 });
