@@ -1,46 +1,26 @@
-"use client"
+"use client";
 
-import {
-  Folder,
-  MoreHorizontal,
-  Share,
-  Trash2,
-  type LucideIcon,
-} from "lucide-react"
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { type LucideIcon } from "lucide-react";
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-export function NavProjects({
-  projects,
+export function NavLinks({
+  links,
 }: {
-  projects: {
-    name: string
-    url: string
-    icon: LucideIcon
-  }[]
+  links: {
+    name: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
 }) {
-  const { isMobile } = useSidebar()
-
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-     
       <SidebarMenu>
-        {projects.map((item) => (
+        {links.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <a href={item.url}>
@@ -52,5 +32,5 @@ export function NavProjects({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

@@ -1,14 +1,8 @@
 "use client";
 
 import * as React from "react";
-import {
-  Command,
-  GoalIcon,
-  LayoutDashboardIcon,
-  Workflow,
-} from "lucide-react";
-
-import { NavProjects } from "@/components/nav-links";
+import { Command, GoalIcon, LayoutDashboardIcon, Workflow } from "lucide-react";
+import { NavLinks } from "@/components/nav-links";
 import {
   Sidebar,
   SidebarContent,
@@ -21,7 +15,7 @@ import {
 const data = {
   links: [
     {
-      name: "Visualize",
+      name: "Dashboard",
       url: "/dashboard",
       icon: LayoutDashboardIcon,
     },
@@ -58,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavProjects projects={data.links} />
+        <NavLinks links={data.links} />
       </SidebarContent>
     </Sidebar>
   );

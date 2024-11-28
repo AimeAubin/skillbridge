@@ -35,6 +35,13 @@ interface SkillsSheetProps {
   };
 }
 
+const skillCategories = [
+  { value: "SOFTSKILLS", label: "Softskills" },
+  { value: "TECHNICAL", label: "Technical" },
+  { value: "LEADERSHIP", label: "Leadership" },
+  { value: "COMMUNICATION", label: "Communication" },
+];
+
 export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
   const trpcUtils = api.useUtils();
   const { toast } = useToast();
@@ -154,18 +161,11 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
                 <SelectValue placeholder="Proficiency Level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SOFTSKILLS">
-                  <SkillBadge category={"Softskills"} />
-                </SelectItem>
-                <SelectItem value="TECHNICAL">
-                  <SkillBadge category={"Technical"} />
-                </SelectItem>
-                <SelectItem value="LEADERSHIP">
-                  <SkillBadge category={"Leadership"} />
-                </SelectItem>
-                <SelectItem value="COMMUNICATION">
-                  <SkillBadge category={"Communication"} />
-                </SelectItem>
+                {skillCategories.map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    <SkillBadge category={category.label} />
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
