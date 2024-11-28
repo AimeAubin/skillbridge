@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import SkillBadge from "./components/skillbadge";
+import SkillBadge from "./skillbadge";
 
 export function RecentlyAddedSkills() {
   const { data: skills } = api?.userSkills?.list.useQuery();

@@ -24,6 +24,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { AddSkillSchema } from "@/utils/validators/skill";
+import SkillBadge from "../skillbadge";
 
 interface SkillsSheetProps {
   button: React.ReactNode;
@@ -31,7 +32,7 @@ interface SkillsSheetProps {
     id: string;
     name: string;
     category: "SOFTSKILLS" | "TECHNICAL" | "LEADERSHIP" | "COMMUNICATION";
-  }[];
+  };
 }
 
 export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
@@ -53,12 +54,10 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
 
   useEffect(() => {
     if (initialSkills) {
-      reset(
-        initialSkills.map((skill) => ({
-          name: skill.name,
-          category: skill.category,
-        }))[0],
-      );
+      reset({
+        name: initialSkills.name,
+        category: initialSkills.category,
+      });
     }
   }, [initialSkills, reset]);
 
@@ -104,7 +103,7 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
   const onSubmit = async (values: z.infer<typeof AddSkillSchema>) => {
     if (initialSkills) {
       await updateSkill({
-        id: initialSkills[0]?.id ?? "",
+        id: initialSkills.id ?? "",
         name: values.name,
         category: values.category,
       });
@@ -149,16 +148,24 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
                   { shouldValidate: true },
                 )
               }
-              defaultValue={initialSkills?.[0]?.category ?? "SOFTSKILLS"}
+              defaultValue={initialSkills?.category ?? "SOFTSKILLS"}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Proficiency Level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SOFTSKILLS">Softskills</SelectItem>
-                <SelectItem value="TECHNICAL">Technical</SelectItem>
-                <SelectItem value="LEADERSHIP">Leadership</SelectItem>
-                <SelectItem value="COMMUNICATION">Communication</SelectItem>
+                <SelectItem value="SOFTSKILLS">
+                  <SkillBadge category={"Softskills"} />
+                </SelectItem>
+                <SelectItem value="TECHNICAL">
+                  <SkillBadge category={"Technical"} />
+                </SelectItem>
+                <SelectItem value="LEADERSHIP">
+                  <SkillBadge category={"Leadership"} />
+                </SelectItem>
+                <SelectItem value="COMMUNICATION">
+                  <SkillBadge category={"Communication"} />
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

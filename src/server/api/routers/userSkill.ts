@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
@@ -11,6 +10,9 @@ import {
 export const userskillsRouter = createTRPCRouter({
   list: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user?.id;
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
     try {
       const userSkills = await ctx.db.userSkill.findMany({
         where: {
@@ -38,6 +40,9 @@ export const userskillsRouter = createTRPCRouter({
     .input(UserSkillFormSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user?.id;
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
       const skillIds = input.skills.map((skill) => skill.skillId);
       const existingSkills = await ctx.db.userSkill.findMany({
         where: {
@@ -88,6 +93,9 @@ export const userskillsRouter = createTRPCRouter({
     .input(UpdateUserSkillSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user?.id;
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
       const { skillId, proficiencyLevel, id } = input;
 
       const existingUserSkill = await ctx.db.userSkill.findUnique({

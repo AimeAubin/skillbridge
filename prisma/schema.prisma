@@ -91,7 +91,8 @@ model Goal {
     skillId            String
     skill              Skill      @relation(fields: [skillId], references: [id])
     desiredProficiency String
-    status             GoalStatus @default(ACTIVE) // Replacing isActive and isCompleted
+    status             GoalStatus @default(ACTIVE)
+    notes              String?
     createdAt          DateTime   @default(now())
     updatedAt          DateTime   @updatedAt
 }
