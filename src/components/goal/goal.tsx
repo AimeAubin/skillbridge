@@ -26,11 +26,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
-import { MySkill } from "@/types";
-import { UserSkillForm } from "../forms/user-skill-form";
-import DeleteModel from "../delete-model";
+import { Goal } from "@/types";
 import { toast } from "@/hooks/use-toast";
-import SkillBadge from "../skillbadge";
+import SkillBadge from "../skill/skillbadge";
+import DeleteModel from "../skill/delete-model";
+import { GoalForm } from "./goalForm";
+import NotesModal from "./notesModal";
 
 type RowData = {
   skill: {
@@ -40,17 +41,46 @@ type RowData = {
   };
 };
 
-export function MySkillsTable() {
+export function Goals() {
   const trpcUtils = api.useUtils();
-  const [data, setData] = React.useState<MySkill[]>([]);
-  const { data: skills } = api.userSkills.list.useQuery();
+  const [data, setData] = React.useState<Goal[]>([]);
+  const { data: goals } = api.goals.list.useQuery();
+  const [selectedGoal, setSelectedGoal] = React.useState<string>("");
 
-  const { mutate: deleteSkill, isPending } = api.userSkills.delete.useMutation({
+  const { mutate: complete, isPending: completing } =
+    api.goals.complete.useMutation({
+      onSuccess: () => {
+        void trpcUtils.goals.invalidate();
+        toast({
+          title: "Success",
+          description: "Goal completed successfully!",
+        });
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        });
+      },
+    });
+
+  const handleComplete = ({
+    id,
+    status,
+  }: {
+    id: string;
+    status: "ACTIVE" | "COMPLETED";
+  }) => {
+    complete({ goalId: id, status: status });
+  };
+
+  const { mutate: deleteGoal, isPending } = api.goals.delete.useMutation({
     onSuccess: () => {
-      void trpcUtils.userSkills.invalidate();
+      void trpcUtils.goals.invalidate();
       toast({
         title: "Success",
-        description: "Skill deleted successfully!",
+        description: "Goal deleted successfully!",
       });
     },
     onError: (error) => {
@@ -70,23 +100,23 @@ export function MySkillsTable() {
   const [rowSelection, setRowSelection] = React.useState({});
 
   React.useEffect(() => {
-    if (skills) {
+    if (goals) {
       setData(
-        skills.map((skill) => ({
-          ...skill,
-          createdAt: skill.createdAt.toISOString(),
-          updatedAt: skill.updatedAt.toISOString(),
+        goals.map((goal) => ({
+          ...goal,
+          createdAt: goal.createdAt.toISOString(),
+          updatedAt: goal.updatedAt.toISOString(),
           skill: {
-            ...skill.skill,
-            createdAt: skill.skill.createdAt.toISOString(),
-            updatedAt: skill.skill.updatedAt.toISOString(),
+            ...goal.skill,
+            createdAt: goal.skill.createdAt.toISOString(),
+            updatedAt: goal.skill.updatedAt.toISOString(),
           },
         })),
       );
     }
-  }, [skills]);
+  }, [goals]);
 
-  const columns: ColumnDef<MySkill>[] = [
+  const columns: ColumnDef<Goal>[] = [
     {
       accessorKey: "skill",
       header: ({ column }) => {
@@ -131,7 +161,7 @@ export function MySkillsTable() {
       },
     },
     {
-      accessorKey: "proficiencyLevel",
+      accessorKey: "desiredProficiency",
       header: ({ column }) => {
         return (
           <Button
@@ -139,18 +169,53 @@ export function MySkillsTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Proficiency Level
+            Desired Proficiency
             <ArrowUpDown />
           </Button>
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("proficiencyLevel")}</div>
+        <div className="lowercase">{row.getValue("desiredProficiency")}</div>
       ),
     },
     {
+      accessorKey: "notes",
+      header: () => <span>Notes</span>,
+      cell: ({ row }) =>
+        row.getValue("notes") === "" ? (
+          <span className="mx-5">_</span>
+        ) : (
+          <NotesModal notes={row.getValue("notes")} />
+        ),
+    },
+    {
+      accessorKey: "status",
+      header: ({ column }) => {
+        return (
+          <Button
+            className="pl-0"
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Status
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) =>
+        row?.original.status === "COMPLETED" ? (
+          <div className="lowercase text-green-600">
+            {row.getValue("status")}
+          </div>
+        ) : (
+          <div className="lowercase text-yellow-600">
+            {row.getValue("status")}
+          </div>
+        ),
+    },
+    {
       accessorKey: "createdAt",
-      header: () => <div className="text-right">Added on At</div>,
+      header: () => <div className="text-right">Created At</div>,
       cell: ({ row }) => {
         const formatted = new Date(row?.original.createdAt).toLocaleDateString(
           "en-US",
@@ -186,19 +251,30 @@ export function MySkillsTable() {
       cell: ({ row }) => {
         return (
           <div className="flex justify-end space-x-4">
-            <UserSkillForm
+            {row.original.status === "COMPLETED" ? null : (
+              <Button
+                className="mt-2 h-6 bg-slate-500 p-1"
+                onClick={() => {
+                  setSelectedGoal(row.original.id);
+                  handleComplete({ id: row.original.id, status: "COMPLETED" });
+                }}
+              >
+                {completing && row.original.id === selectedGoal
+                  ? "Completing..."
+                  : "Mark as completed"}
+              </Button>
+            )}
+            <GoalForm
               button={editButton}
-              initialSkills={[
-                {
-                  skillId: row.original.skill.id,
-                  id: row.original.id,
-                  skillName: row.original.skill.name,
-                  proficiencyLevel: row.original.proficiencyLevel as
-                    | "BEGINNER"
-                    | "INTERMEDIATE"
-                    | "ADVANCED",
-                },
-              ]}
+              initialSkills={{
+                skillId: row.original.skill.id,
+                id: row.original.id,
+                notes: row.original.notes ?? "",
+                desiredProficiency: row.original.desiredProficiency as
+                  | "BEGINNER"
+                  | "INTERMEDIATE"
+                  | "ADVANCED",
+              }}
             />
             <DeleteModel
               button={deleteButton}
@@ -231,8 +307,8 @@ export function MySkillsTable() {
   });
 
   const addButton = (
-    <Button variant="outline">
-      <Plus /> Add Skill(s) To My Skills
+    <Button>
+      <Plus /> Create Goal
     </Button>
   );
 
@@ -249,14 +325,14 @@ export function MySkillsTable() {
   );
 
   const handleDelete = (id: string) => {
-    deleteSkill({ id });
+    deleteGoal({ goalId: id });
   };
 
   return (
     <div className="w-full">
       <div className="flex justify-between py-4">
         <Input
-          placeholder="Filter skills..."
+          placeholder="Filter Goals..."
           value={(table.getColumn("skill")?.getFilterValue() as string) ?? ""}
           onChange={(event) => {
             const value = event.target.value;
@@ -264,7 +340,7 @@ export function MySkillsTable() {
           }}
           className="max-w-sm"
         />
-        <UserSkillForm button={addButton} />
+        <GoalForm button={addButton} />
       </div>
       <div className="rounded-md border">
         <Table>

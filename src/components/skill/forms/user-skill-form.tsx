@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectTrigger,
@@ -29,6 +28,7 @@ import {
   UserSkillFormSchema,
   UpdateUserSkillSchema,
 } from "@/utils/validators/skill";
+import SkillBadge from "../skillbadge";
 
 interface AddSkillsSheetProps {
   button: React.ReactNode;
@@ -162,7 +162,14 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                   <SelectContent>
                     {predefinedSkills.map((skill) => (
                       <SelectItem key={skill.id} value={skill.id}>
-                        {skill.name}
+                        <div className="flex">
+                          <span> {skill.name}</span>
+                          <span className="ml-1">
+                            <SkillBadge
+                              category={skill.category.toLowerCase()}
+                            />
+                          </span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>

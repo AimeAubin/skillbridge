@@ -1,6 +1,5 @@
-import { auth } from "@/server/auth";
+import { Visualization } from "@/components/skill/visualization";
 
 export default async function Dashboard() {
-  const session = await auth();
-  return <>{session && <span>{session.user.name}</span>}</>;
+  return <Visualization />;
 }

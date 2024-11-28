@@ -1,17 +1,8 @@
 "use client";
 
 import * as React from "react";
-import {
-  Bot,
-  Command,
-  Frame,
-  Map,
-  PieChart,
-  SquareTerminal,
-} from "lucide-react";
-
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
+import { Command, GoalIcon, LayoutDashboardIcon, Workflow } from "lucide-react";
+import { NavLinks } from "@/components/nav-links";
 import {
   Sidebar,
   SidebarContent,
@@ -22,58 +13,21 @@ import {
 } from "@/components/ui/sidebar";
 
 const data = {
-  navMain: [
-    {
-      title: "My Goals",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "Goals",
-          url: "/dashboard/goals",
-        },
-        {
-          title: "Add Goal",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Skills",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Visualization",
-          url: "/dashboard/visualization",
-        },
-        {
-          title: "Skills",
-          url: "/dashboard/skills",
-        },
-      ],
-    },
-  ],
-  projects: [
+  links: [
     {
       name: "Dashboard",
-      url: "#",
-      icon: Frame,
+      url: "/dashboard",
+      icon: LayoutDashboardIcon,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      name: "Goals",
+      url: "/dashboard/goals",
+      icon: GoalIcon,
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Skills",
+      url: "/dashboard/skills",
+      icon: Workflow,
     },
   ],
 };
@@ -98,8 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavLinks links={data.links} />
       </SidebarContent>
     </Sidebar>
   );

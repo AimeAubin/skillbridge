@@ -1,5 +1,5 @@
-import React from "react";
+import { Goals } from "@/components/goal/goal";
 
 export default function page() {
-  return <div>page</div>;
+  return <Goals />;
 }
