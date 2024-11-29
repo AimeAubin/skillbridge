@@ -50,7 +50,9 @@ export const LoginForm = () => {
           form.reset();
           setSuccess("User logged in successfully.");
         })
-        .catch(() => setError("Something went wrong!"));
+        .catch(() => {
+          setError("Something went wrong!");
+        });
     });
   };
 

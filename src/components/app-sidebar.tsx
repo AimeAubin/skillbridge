@@ -1,7 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Command, GoalIcon, LayoutDashboardIcon, Workflow } from "lucide-react";
+import {
+  Cog,
+  Command,
+  GoalIcon,
+  LayoutDashboardIcon,
+  Workflow,
+} from "lucide-react";
 import { NavLinks } from "@/components/nav-links";
 import {
   Sidebar,
@@ -28,6 +34,11 @@ const data = {
       name: "Skills",
       url: "/dashboard/skills",
       icon: Workflow,
+    },
+    {
+      name: "Settings",
+      url: "/dashboard/settings",
+      icon: Cog,
     },
   ],
 };

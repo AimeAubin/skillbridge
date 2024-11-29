@@ -10,17 +10,28 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { LogOut } from "lucide-react";
+import { api } from "@/trpc/react";
 
 interface UserButtonProps {
   isMobile: boolean;
 }
 
 export const UserButton = ({ isMobile }: UserButtonProps) => {
-  const user = useCurrentUser();
+  const { data: user } = api.user.getUserByEmail.useQuery();
 
   const getInitials = (name: string) => {
-    const splitName = name.split(" ");
-    return `${splitName?.[0]?.[0]?.toUpperCase()}${splitName?.[1]?.[0]?.toUpperCase()}`;
+    if (!name || typeof name !== "string") return "";
+
+    const splitName = name.trim().split(/\s+/);
+
+    // Explicitly check that splitName is not empty
+    if (splitName.length === 0) return "";
+
+    if (splitName.length === 1) {
+      return splitName[0]?.[0]?.toUpperCase() ?? "UU";
+    }
+
+    return `${splitName[0]?.[0]?.toUpperCase() ?? "UU"}${splitName[1]?.[0]?.toUpperCase() ?? "UU"}`;
   };
 
   return (
