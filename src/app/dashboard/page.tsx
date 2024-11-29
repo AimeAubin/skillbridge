@@ -11,7 +11,7 @@ export default async function Dashboard() {
         <RecentlyAddedSkills />
       </div>
       <Separator />
-      <h1 className="mt-6 font-[550] text-[20px]">Goals Overview</h1>
+      <h1 className="mt-6 text-[20px] font-[550]">Goals Overview</h1>
       <div className="mt-6">
         <GoalsStatics />
       </div>
