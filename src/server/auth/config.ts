@@ -67,6 +67,7 @@ export const authConfig = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  trustHost: true,
   pages: {
     signIn: "/auth/login",
     error: "/auth/error",
