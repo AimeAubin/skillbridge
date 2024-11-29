@@ -30,7 +30,7 @@ const proficiencyMapping = {
   ADVANCED: 100,
 };
 
-export function Visualization() {
+export function Chart() {
 
   const { data: userSkills, isLoading, error } = api.userSkills.list.useQuery();
 
