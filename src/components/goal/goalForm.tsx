@@ -159,7 +159,7 @@ export function GoalForm({ button, initialSkills }: AddGoalSheetProps) {
                     <div className="flex">
                       <span> {skill.name}</span>
                       <span className="ml-1">
-                        <SkillBadge category={skill.category.toLowerCase()} />
+                        <SkillBadge category={skill.category} />
                       </span>
                     </div>
                   </SelectItem>

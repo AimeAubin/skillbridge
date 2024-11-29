@@ -138,7 +138,7 @@ export function Goals() {
       filterFn: (row, columnId, filterValue) => {
         const skill = row.getValue(columnId) as RowData["skill"];
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        return skill?.name.toLowerCase().includes(filterValue.toLowerCase());
+        return skill?.name.includes(filterValue);
       },
     },
     {
@@ -157,7 +157,7 @@ export function Goals() {
       },
       cell: ({ row }) => {
         const skill = row.getValue("skill") as RowData["skill"];
-        return <SkillBadge category={skill?.category.toLowerCase()} />;
+        return <SkillBadge category={skill?.category} />;
       },
     },
     {
@@ -175,7 +175,7 @@ export function Goals() {
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("desiredProficiency")}</div>
+        <div className="custom-capitalize">{row.getValue("desiredProficiency")}</div>
       ),
     },
     {
@@ -204,11 +204,11 @@ export function Goals() {
       },
       cell: ({ row }) =>
         row?.original.status === "COMPLETED" ? (
-          <div className="lowercase text-green-600">
+          <div className=" text-green-600 custom-capitalize">
             {row.getValue("status")}
           </div>
         ) : (
-          <div className="lowercase text-yellow-600">
+          <div className="text-yellow-600 custom-capitalize">
             {row.getValue("status")}
           </div>
         ),

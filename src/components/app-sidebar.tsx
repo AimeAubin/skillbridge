@@ -25,15 +25,15 @@ const data = {
       url: "/dashboard",
       icon: LayoutDashboardIcon,
     },
+      {
+      name: "Skills",
+      url: "/dashboard/skills",
+      icon: Workflow,
+    },
     {
       name: "Goals",
       url: "/dashboard/goals",
       icon: GoalIcon,
-    },
-    {
-      name: "Skills",
-      url: "/dashboard/skills",
-      icon: Workflow,
     },
     {
       name: "Settings",
@@ -45,7 +45,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar collapsible="icon" variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

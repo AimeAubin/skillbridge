@@ -109,7 +109,7 @@ export function UserSkills() {
       filterFn: (row, columnId, filterValue) => {
         const skill = row.getValue(columnId) as RowData["skill"];
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        return skill?.name.toLowerCase().includes(filterValue.toLowerCase());
+        return skill?.name.includes(filterValue);
       },
     },
     {
@@ -128,7 +128,7 @@ export function UserSkills() {
       },
       cell: ({ row }) => {
         const skill = row.getValue("skill") as RowData["skill"];
-        return <SkillBadge category={skill?.category.toLowerCase()} />;
+        return <SkillBadge category={skill?.category} />;
       },
     },
     {
@@ -146,7 +146,7 @@ export function UserSkills() {
         );
       },
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("proficiencyLevel")}</div>
+        <div className="custom-capitalize">{row.getValue("proficiencyLevel")}</div>
       ),
     },
     {
