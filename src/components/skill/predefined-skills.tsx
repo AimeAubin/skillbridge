@@ -89,7 +89,7 @@ export function PredefinedSkills() {
       cell: ({ row }) => {
         return (
           <SkillBadge
-            category={(row.getValue("category") as string).toLowerCase()}
+            category={(row.getValue("category") as string)}
           />
         );
       },

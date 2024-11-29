@@ -147,7 +147,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="mt-12 space-y-4">
           {fields.map((field, index) => (
             <div key={field.id}>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1">
                 <Select
                   onValueChange={(value) =>
                     setValue(`skills.${index}.skillId`, value, {
@@ -166,7 +166,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                           <span> {skill.name}</span>
                           <span className="ml-1">
                             <SkillBadge
-                              category={skill.category.toLowerCase()}
+                              category={skill.category}
                             />
                           </span>
                         </div>

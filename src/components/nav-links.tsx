@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { usePathname } from "next/navigation";
 
 export function NavLinks({
   links,
@@ -17,13 +18,19 @@ export function NavLinks({
     icon: LucideIcon;
   }[];
 }) {
+  const currentPath = usePathname();
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup>
       <SidebarMenu>
         {links.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              <a
+                href={item.url}
+                className={`flex items-center space-x-2 rounded-md p-2 ${
+                  currentPath === item.url ? "bg-gray-200" : ""
+                }`}
+              >
                 <item.icon />
                 <span>{item.name}</span>
               </a>
