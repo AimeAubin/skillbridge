@@ -15,10 +15,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import SkillBadge from "./skillbadge";
+import SkillBadge from "../skill/skillbadge";
 
 export function RecentlyAddedSkills() {
-  const { data: skills } = api?.userSkills?.list.useQuery();
+  const { data: skills } = api.userSkills.list.useQuery();
   const recentSkills = skills ? skills?.slice(0, 5) : [];
   return (
       <Card className="w-[50%] 2xl:w-[30%]">
@@ -36,8 +36,8 @@ export function RecentlyAddedSkills() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {recentSkills.map((skill, index) => (
-                <TableRow key={index}>
+              {recentSkills.map((skill) => (
+                <TableRow key={skill.id}>
                   <TableCell className="font-medium">
                     <div className="flex">
                       <span className="mr-3 h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
