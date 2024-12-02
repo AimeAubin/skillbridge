@@ -54,7 +54,7 @@ This project is a streamlined version of SkillBridge, designed to help employees
   `pnpm install`
 - Environment Variables:<br/>
 Create a .env file in the root directory with the following:</br>
-`DATABASE_URL=your_database_url </br>NEXTAUTH_SECRET=your_secret_key </br>NEXTAUTH_URL=http://localhost:3000 </br>
+`DATABASE_URL=your_database_url` </br>`NEXTAUTH_SECRET=your_secret_key` </br>`NEXTAUTH_URL=http://localhost:3000`
 - Database Setup:
   Run the Prisma migrations:</br>
   `npx prisma migrate dev`</br>`pnpm run dev`  
