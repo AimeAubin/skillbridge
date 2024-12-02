@@ -11,6 +11,9 @@ export const goalsRouter = createTRPCRouter({
     return await ctx.db.goal.findMany({
       where: { userId },
       include: { skill: true },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   }),
 

@@ -48,7 +48,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
   const {
     control,
     handleSubmit,
-    register,
+    getValues,
     reset,
     setValue,
     formState: { errors },
@@ -154,7 +154,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                       shouldValidate: true,
                     })
                   }
-                  defaultValue={field.skillId || ""}
+                  value={field.skillId || getValues("skills")[index]?.skillId}
                 >
                   <SelectTrigger className="w-[200px] overflow-hidden text-ellipsis">
                     <SelectValue placeholder="Select Skill" />
@@ -182,7 +182,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                       { shouldValidate: true },
                     )
                   }
-                  defaultValue={field.proficiencyLevel}
+                  value={field.proficiencyLevel || getValues("skills")[index]?.proficiencyLevel}
                 >
                   <SelectTrigger className="w-[180px] overflow-hidden text-ellipsis">
                     <SelectValue placeholder="Proficiency Level" />

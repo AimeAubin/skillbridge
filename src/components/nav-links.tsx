@@ -8,6 +8,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export function NavLinks({
   links,
@@ -25,15 +26,21 @@ export function NavLinks({
         {links.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <a
+              <Link
                 href={item.url}
                 className={`flex items-center space-x-2 rounded-md p-2 ${
-                  currentPath === item.url ? "bg-gray-200" : ""
+                  currentPath === item.url ? "bg-gray-200 dark:bg-gray-700" : ""
                 }`}
               >
                 <item.icon />
-                <span>{item.name}</span>
-              </a>
+                <span
+                  className={`${
+                    currentPath === item.url ? "text-black dark:text-white" : ""
+                  }`}
+                >
+                  {item.name}
+                </span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
