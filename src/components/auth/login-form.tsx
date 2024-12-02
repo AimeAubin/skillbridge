@@ -15,11 +15,12 @@ import { useForm } from "react-hook-form";
 import { LoginSchema } from "@/utils/validators/user";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useTransition, useState } from "react";
 import { login } from "@/actions/login";
 import { FormError } from "@/components/misc/form-error";
 import { FormSuccess } from "@/components/misc/form-success";
+import { DEFAULT_LOGIN_REDIRECT } from "@/route";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -40,19 +41,13 @@ export const LoginForm = () => {
     setSuccess("");
 
     startTransition(() => {
-      login(values, callbackUrl)
+      void login(values, callbackUrl)
         .then((data) => {
           if (data?.error) {
             form.reset();
             setError(data.error);
           }
-
-          form.reset();
-          setSuccess("User logged in successfully.");
         })
-        .catch(() => {
-          setError("Something went wrong!");
-        });
     });
   };
 
