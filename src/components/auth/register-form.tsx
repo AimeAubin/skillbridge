@@ -19,13 +19,18 @@ import { api } from "@/trpc/react";
 import { FormError } from "@/components/misc/form-error";
 import { FormSuccess } from "@/components/misc/form-success";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export const RegisterForm = () => {
+  const router = useRouter();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const { mutate, isPending } = api.user.create.useMutation({
     onSuccess: () => {
       setSuccess("User created successfully");
+      setTimeout(() => {
+        router.push("/auth/login");
+      }, 1500);
     },
     onError: (error) => {
       setError(error.message);
