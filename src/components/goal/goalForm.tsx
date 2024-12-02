@@ -46,6 +46,7 @@ export function GoalForm({ button, initialSkills }: AddGoalSheetProps) {
     register,
     handleSubmit,
     reset,
+    getValues,
     setValue,
     formState: { errors },
   } = useForm<z.infer<typeof GoalFormSchema>>({
@@ -148,7 +149,7 @@ export function GoalForm({ button, initialSkills }: AddGoalSheetProps) {
                   shouldValidate: true,
                 })
               }
-              defaultValue={initialSkills?.skillId ?? ""}
+              value={initialSkills?.skillId ?? getValues("skillId")}
             >
               <SelectTrigger className="w-[200px] overflow-hidden text-ellipsis">
                 <SelectValue placeholder="Select Skill" />
@@ -174,7 +175,10 @@ export function GoalForm({ button, initialSkills }: AddGoalSheetProps) {
                   { shouldValidate: true },
                 )
               }
-              defaultValue={initialSkills?.desiredProficiency ?? "BEGINNER"}
+              value={
+                initialSkills?.desiredProficiency ??
+                getValues("desiredProficiency")
+              }
             >
               <SelectTrigger className="w-[180px] overflow-hidden text-ellipsis">
                 <SelectValue placeholder="Proficiency Level" />

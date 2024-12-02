@@ -49,6 +49,7 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
     handleSubmit,
     register,
     reset,
+    getValues,
     setValue,
     formState: { errors },
   } = useForm<z.infer<typeof AddSkillSchema>>({
@@ -155,7 +156,7 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
                   { shouldValidate: true },
                 )
               }
-              defaultValue={initialSkills?.category ?? "SOFTSKILLS"}
+              value={initialSkills?.category ?? getValues("category")}
             >
               <SelectTrigger className="w-full overflow-hidden text-ellipsis">
                 <SelectValue placeholder="Proficiency Level" />
