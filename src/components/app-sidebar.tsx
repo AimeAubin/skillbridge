@@ -26,7 +26,7 @@ const data = {
       url: "/dashboard",
       icon: LayoutDashboardIcon,
     },
-    {
+      {
       name: "Skills",
       url: "/dashboard/skills",
       icon: Workflow,
