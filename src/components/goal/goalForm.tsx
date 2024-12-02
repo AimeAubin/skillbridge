@@ -150,7 +150,7 @@ export function GoalForm({ button, initialSkills }: AddGoalSheetProps) {
               }
               defaultValue={initialSkills?.skillId ?? ""}
             >
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="w-[200px] overflow-hidden text-ellipsis">
                 <SelectValue placeholder="Select Skill" />
               </SelectTrigger>
               <SelectContent>
@@ -176,7 +176,7 @@ export function GoalForm({ button, initialSkills }: AddGoalSheetProps) {
               }
               defaultValue={initialSkills?.desiredProficiency ?? "BEGINNER"}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] overflow-hidden text-ellipsis">
                 <SelectValue placeholder="Proficiency Level" />
               </SelectTrigger>
               <SelectContent>
