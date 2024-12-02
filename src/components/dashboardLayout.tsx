@@ -60,7 +60,7 @@ export default function DashboardLayout({
             </div>
           </div>
         </header>
-        <div className="mx-auto w-full max-w-5xl">{children}</div>
+        <div className="mx-auto w-full max-w-3xl 2xl:max-w-[1500px]">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

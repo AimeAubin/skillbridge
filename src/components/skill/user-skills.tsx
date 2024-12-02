@@ -254,7 +254,7 @@ export function UserSkills() {
   };
 
   return (
-    <div className="w-full">
+    <div>
       <div className="flex justify-between py-4">
         <Input
           placeholder="Filter skills..."
