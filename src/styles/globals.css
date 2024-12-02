@@ -8,6 +8,14 @@ body,
   height: 100%;
 }
 
+.custom-capitalize {
+  text-transform: lowercase;
+}
+
+.custom-capitalize::first-letter {
+  text-transform: uppercase;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

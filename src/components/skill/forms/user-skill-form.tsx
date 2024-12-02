@@ -147,7 +147,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="mt-12 space-y-4">
           {fields.map((field, index) => (
             <div key={field.id}>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1">
                 <Select
                   onValueChange={(value) =>
                     setValue(`skills.${index}.skillId`, value, {
@@ -156,7 +156,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                   }
                   defaultValue={field.skillId || ""}
                 >
-                  <SelectTrigger className="w-[200px]">
+                  <SelectTrigger className="w-[200px] overflow-hidden text-ellipsis">
                     <SelectValue placeholder="Select Skill" />
                   </SelectTrigger>
                   <SelectContent>
@@ -166,7 +166,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                           <span> {skill.name}</span>
                           <span className="ml-1">
                             <SkillBadge
-                              category={skill.category.toLowerCase()}
+                              category={skill.category}
                             />
                           </span>
                         </div>
@@ -184,7 +184,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                   }
                   defaultValue={field.proficiencyLevel}
                 >
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-[180px] overflow-hidden text-ellipsis">
                     <SelectValue placeholder="Proficiency Level" />
                   </SelectTrigger>
                   <SelectContent>

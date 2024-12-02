@@ -157,7 +157,7 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
               }
               defaultValue={initialSkills?.category ?? "SOFTSKILLS"}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full overflow-hidden text-ellipsis">
                 <SelectValue placeholder="Proficiency Level" />
               </SelectTrigger>
               <SelectContent>
