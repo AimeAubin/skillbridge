@@ -154,7 +154,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                       shouldValidate: true,
                     })
                   }
-                  value={field.skillId || getValues("skills")[index]?.skillId}
+                  defaultValue={field.skillId ?? ""}
                 >
                   <SelectTrigger className="w-[200px] overflow-hidden text-ellipsis">
                     <SelectValue placeholder="Select Skill" />
@@ -165,9 +165,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                         <div className="flex">
                           <span> {skill.name}</span>
                           <span className="ml-1">
-                            <SkillBadge
-                              category={skill.category}
-                            />
+                            <SkillBadge category={skill.category} />
                           </span>
                         </div>
                       </SelectItem>
@@ -182,7 +180,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                       { shouldValidate: true },
                     )
                   }
-                  value={field.proficiencyLevel || getValues("skills")[index]?.proficiencyLevel}
+                  defaultValue={field.proficiencyLevel ?? ""}
                 >
                   <SelectTrigger className="w-[180px] overflow-hidden text-ellipsis">
                     <SelectValue placeholder="Proficiency Level" />
