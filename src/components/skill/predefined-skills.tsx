@@ -69,7 +69,7 @@ export function PredefinedSkills() {
         );
       },
       cell: ({ row }) => {
-        return <div className="lowercase">{row.getValue("name")}</div>;
+        return <div className="custom-capitalize">{row.getValue("name")}</div>;
       },
     },
     {

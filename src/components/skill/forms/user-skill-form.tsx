@@ -48,7 +48,6 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
   const {
     control,
     handleSubmit,
-    getValues,
     reset,
     setValue,
     formState: { errors },
@@ -163,7 +162,9 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                     {predefinedSkills.map((skill) => (
                       <SelectItem key={skill.id} value={skill.id}>
                         <div className="flex">
-                          <span> {skill.name}</span>
+                          <span className="custom-capitalize">
+                            {skill.name}
+                          </span>
                           <span className="ml-1">
                             <SkillBadge category={skill.category} />
                           </span>
@@ -180,7 +181,7 @@ export function UserSkillForm({ button, initialSkills }: AddSkillsSheetProps) {
                       { shouldValidate: true },
                     )
                   }
-                  defaultValue={field.proficiencyLevel ?? ""}
+                  defaultValue={field.proficiencyLevel ?? "BEGINNER"}
                 >
                   <SelectTrigger className="w-[180px] overflow-hidden text-ellipsis">
                     <SelectValue placeholder="Proficiency Level" />

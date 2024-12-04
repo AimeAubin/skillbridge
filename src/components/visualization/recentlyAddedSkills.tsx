@@ -44,7 +44,7 @@ export function RecentlyAddedSkills() {
                     {skill?.skill?.name}
                   </div>
                 </TableCell>
-                <TableCell>{skill?.proficiencyLevel}</TableCell>
+                <TableCell className="custom-capitalize">{skill?.proficiencyLevel}</TableCell>
                 <TableCell>
                   <SkillBadge category={skill?.skill.category} />
                 </TableCell>

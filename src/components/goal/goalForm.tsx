@@ -52,21 +52,11 @@ export function GoalForm({ button, initialSkills }: AddGoalSheetProps) {
   } = useForm<z.infer<typeof GoalFormSchema>>({
     resolver: zodResolver(GoalFormSchema),
     defaultValues: {
-      skillId: "",
-      notes: "",
-      desiredProficiency: "BEGINNER",
+      skillId: initialSkills?.skillId ?? "",
+      notes: initialSkills?.notes ?? "",
+      desiredProficiency: initialSkills?.desiredProficiency ?? "BEGINNER",
     },
   });
-
-  useEffect(() => {
-    if (initialSkills) {
-      reset({
-        skillId: initialSkills.skillId,
-        notes: initialSkills.notes,
-        desiredProficiency: initialSkills.desiredProficiency,
-      });
-    }
-  }, [initialSkills, reset]);
 
   const { data: skillData } = api.skills.list.useQuery();
   useEffect(() => {
@@ -152,13 +142,17 @@ export function GoalForm({ button, initialSkills }: AddGoalSheetProps) {
               value={initialSkills?.skillId ?? getValues("skillId")}
             >
               <SelectTrigger className="w-[200px] overflow-hidden text-ellipsis">
-                <SelectValue placeholder="Select Skill" />
+                <SelectValue placeholder="Select Skill">
+                  {predefinedSkills.find(
+                    (skill) => skill.id === getValues("skillId"),
+                  )?.name ?? "Select Skill"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {predefinedSkills.map((skill) => (
                   <SelectItem key={skill.id} value={skill.id}>
                     <div className="flex">
-                      <span> {skill.name}</span>
+                      <span className="custom-capitalize"> {skill.name}</span>
                       <span className="ml-1">
                         <SkillBadge category={skill.category} />
                       </span>
@@ -181,7 +175,11 @@ export function GoalForm({ button, initialSkills }: AddGoalSheetProps) {
               }
             >
               <SelectTrigger className="w-[180px] overflow-hidden text-ellipsis">
-                <SelectValue placeholder="Proficiency Level" />
+                <SelectValue placeholder="Proficiency Level">
+                  <span className="custom-capitalize">
+                    {getValues("desiredProficiency")}
+                  </span>
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="BEGINNER">Beginner</SelectItem>
