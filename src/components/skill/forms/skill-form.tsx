@@ -55,19 +55,10 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
   } = useForm<z.infer<typeof AddSkillSchema>>({
     resolver: zodResolver(AddSkillSchema),
     defaultValues: {
-      name: "",
-      category: "SOFTSKILLS",
+      name: initialSkills?.name ?? "",
+      category: initialSkills?.category ?? "SOFTSKILLS",
     },
   });
-
-  useEffect(() => {
-    if (initialSkills) {
-      reset({
-        name: initialSkills.name,
-        category: initialSkills.category,
-      });
-    }
-  }, [initialSkills, reset]);
 
   const { mutateAsync: addSkill, isPending } = api.skills.add.useMutation({
     onSuccess: () => {
@@ -159,7 +150,9 @@ export function SkillForm({ button, initialSkills }: SkillsSheetProps) {
               value={initialSkills?.category ?? getValues("category")}
             >
               <SelectTrigger className="w-full overflow-hidden text-ellipsis">
-                <SelectValue placeholder="Proficiency Level" />
+                <SelectValue placeholder="Proficiency Level">
+                  <SkillBadge category={getValues("category")} />
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {skillCategories.map((category) => (
